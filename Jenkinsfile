@@ -37,6 +37,31 @@ pipeline {
 				sh "mvn failsafe:integration-test failsafe:verify"
 			}
 		}
+
+		stage('Package'){
+			steps{
+				sh "mvn package -DskipTests"    // this will create a jar file and this jar file will be used to create docker image and push to Dockerhub
+			}
+		}
+		stage('Build Docker Image'){
+			steps{
+				//docker build -t parivarababuk/currency-exchange-devops:$env.BUILD_TAG
+				script{
+					dockerImage = docker.build("parivarababuk/currency-exchange-devops:${env.BUILD_TAG}")
+				}
+			}
+		}
+		stage('Push Docker Image'){
+			steps{
+				script{
+					docker.withRegistry('', 'dockerhub')  // picks the credentials for dockerhub from Cerdentials manager configureed in Jenkins dashboard
+					{
+						dockerImage.push();
+						dockerImage.push('latest');
+					}
+				}
+			}
+		}
 	}
 	post{
 		success{
