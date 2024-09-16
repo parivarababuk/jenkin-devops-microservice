@@ -20,5 +20,13 @@ pipeline {
 			}
 		}
 	}
+	post{
+		success{
+			echo 'I rum when Build is success'
+		}
+		failure{
+			echo 'I rum when Build is failed'
+		}
+	}
 	
 }
