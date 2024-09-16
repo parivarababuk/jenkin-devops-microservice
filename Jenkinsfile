@@ -2,10 +2,16 @@
 
 //Declarative pipeline
 pipeline {
-	agent any
+	//agent any
+	agent{
+		docker{
+			image 'maven:3.6.3'
+		}
+	}
 	stages{
 		stage('Build'){
 			steps{
+				sh 'mvn --version'
 				echo "Build"
 			}
 		}
@@ -22,10 +28,10 @@ pipeline {
 	}
 	post{
 		success{
-			echo 'I rum when Build is success'
+			echo 'I run when Build is success'
 		}
 		failure{
-			echo 'I rum when Build is failed'
+			echo 'I run when Build is failed'
 		}
 	}
 	
